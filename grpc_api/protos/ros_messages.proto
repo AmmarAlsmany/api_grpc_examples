@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package ros_messages;
+
+// ROSBridge service provides bidirectional communication between ROS and Python applications
+service ROSBridge {
+    // StreamSensorData handles continuous sensor data transmission
+    // Client can send sensor data and receive status updates
+    rpc StreamSensorData (stream SensorData) returns (stream StatusResponse) {}
+    
+    // StreamRobotPose handles continuous robot pose updates
+    // Client can send pose data and receive status updates
+    rpc StreamRobotPose (stream RobotPose) returns (stream StatusResponse) {}
+    
+    // StreamImageData handles continuous image data transmission
+    // Client can send image data and receive status updates
+    rpc StreamImageData (stream ImageData) returns (stream StatusResponse) {}
+}
+
+// SensorData represents sensor readings with metadata
+message SensorData {
+    string sensor_id = 1;      // Unique identifier for the sensor
+    double value = 2;          // Sensor reading value
+    string unit = 3;           // Unit of measurement (e.g., "celsius", "meters", etc.)
+    int64 timestamp = 4;       // Unix timestamp in milliseconds
+}
+
+// RobotPose represents the position and orientation of a robot
+message RobotPose {
+    double x = 1;              // X coordinate in meters
+    double y = 2;              // Y coordinate in meters
+    double z = 3;              // Z coordinate in meters
+    double orientation = 4;     // Orientation in degrees (0-360)
+    int64 timestamp = 5;       // Unix timestamp in milliseconds
+}
+
+// ImageData represents an image with metadata
+message ImageData {
+    int32 width = 1;          // Image width in pixels
+    int32 height = 2;         // Image height in pixels
+    string encoding = 3;      // Image encoding (e.g., "rgb8", "bgr8", etc.)
+    bytes data = 4;           // Raw image data
+    int64 timestamp = 5;      // Unix timestamp in milliseconds
+}
+
+// StatusResponse provides feedback for received messages
+message StatusResponse {
+    bool success = 1;         // Whether the message was processed successfully
+    string message = 2;       // Additional information or error message
+}
